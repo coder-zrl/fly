@@ -1,0 +1,27 @@
+@startuml
+participant Part1
+participant Part2
+participant Part3
+
+autonumber
+== 测试一下 ==
+Part1 -> Part2: 判断
+Part2 -> Part3: 查询
+alt 缓存不存在
+    Part3 -> Redis: 更新缓存
+else 缓存存在
+    Part3 --> Redis: 不更新缓存
+end
+Part2 -> Part1: 返回结果
+
+autonumber
+== 测试两下 ==
+Part1 -> Part2: 判断
+Part2 -> Part3: 查询
+alt 缓存不存在
+    Part3 -> Redis: 更新缓存
+else 缓存存在
+    Part3 --> Redis: 不更新缓存
+end
+Part2 -> Part1: 返回结果
+@enduml

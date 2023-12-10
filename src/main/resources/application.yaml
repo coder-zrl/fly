@@ -1,0 +1,57 @@
+server:
+  port: 10001
+spring:
+  application:
+    name: mini-bird-start
+  datasource:
+    url: jdbc:mysql://localhost:3306/test?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: root
+  redis:
+    host: 127.0.0.1
+    port: 6377
+    password:
+  jackson:
+    default-property-inclusion: non_null # null字段忽略
+jwt:
+  header: "Authorization"
+  tokenPrefix: "Bearer "
+  secret: "bird"
+  expireTime: 1800000
+#  refreshTime: 100000
+#  tokenHead: "Bearer "
+
+knife4j:
+  enable: true
+  openapi:
+    title: Knife4j????
+    description: "`????`,**????**
+    # aaa"
+    email: xiaoymin@foxmail.com
+    concat: ????
+    url: https://docs.xiaominfo.com
+    version: v4.0
+    license: Apache 2.0
+    license-url: https://stackoverflow.com/
+    terms-of-service-url: https://stackoverflow.com/
+    group:
+      test1:
+        group-name: ????
+        api-rule: package
+        api-rule-resources:
+          - com.knife4j.demo.new3
+grpc:
+  server:
+    in-process-name: say-hi-sdk-grpc
+    # 修改服务端默认入参最大大小，默认值为4M ，这里修改为20M   20*1024*1024
+    max-inbound-message-size: 20971520
+    # grpc 端口号
+    port: 8989
+  client:
+    GLOBAL:
+      negotiation-type: plaintext
+      # 修改客户端端默认入参最大大小，默认值为4M ，这里修改为20M   20*1024*1024
+      max-inbound-message-size: 20971520
+      # 客户端指定连接服务端地址
+      address: 'static://127.0.0.1:8989'

@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scan ：开启"热更新" scanPeriod："热更新"扫描周期，默认 60 seconds(60秒)-->
+<configuration scan="true" scanPeriod="300 seconds">
+    <!-- 自定义变量，用于配置日志输出格式，这个格式是尽量偏向 spring boot 默认的输出风格
+    %date：日期，默认格式 yyyy-MM-dd hhh:mm:ss,SSS 默认使用本机时区，通过 %d{yyyy-MM-dd hhh:mm:ss,SSS} 来自定义
+    %-5level：5个占位符的日志级别，例如" info"、"error"
+    %thread : 输出日志的线程
+    %class : 输出日志的类的完全限定名，效率低
+    %method : 输出日志的方法名
+    %line : 输出日志的行号，效率低
+    %msg : 日志消息内容
+    %n : 换行
+    -->
+    <!--项目名-->
+    <property name="PROJECT_NAME" value="mini-bird-fly"/>
+    <!--日志存放地址-->
+    <property name="APPLICATION_LOG_HOME" value="logs/mini-bird-fly"/>
+    <!--普通日志格式-->
+    <property name="LOG_PATTERN"
+              value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level --- %X{TraceId} %class.%method:%L - %m%n"/>
+
+    <!--日志输出器. ch.qos.logback.core.ConsoleAppender : 输出到控制台-->
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>debug</level>
+        </filter>
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <appender name="mainSync" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>logs/${APPLICATION_LOG_HOME}/main.log</file>
+        <!--ThresholdFilter是打印level及以上的日志 LevelFilter这样写是打印指定级别的日志 -->
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>WARN</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${APPLICATION_LOG_HOME}/main.log.%d{yyyy-MM-dd}.%i</fileNamePattern>
+            <maxFileSize>100MB</maxFileSize>
+            <maxHistory>300</maxHistory>
+            <maxFileSize>1GB</maxFileSize>
+        </rollingPolicy>
+        <encoder charset="UTF-8">
+            <pattern>${LOG_PATTERN}</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <appender name="mainAsync" class="ch.qos.logback.classic.AsyncAppender">
+        <neverBlock>true</neverBlock>
+        <maxFlushTime>3000</maxFlushTime>
+        <queueSize>512</queueSize>
+        <appender-ref ref="mainSync"/>
+        <includeCallerData>true</includeCallerData>
+    </appender>
+
+    <appender name="warningSync" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${APPLICATION_LOG_HOME}/warning.log</file>
+        <!--ThresholdFilter是打印level及以上的日志 LevelFilter这样写是打印指定级别的日志 -->
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>WARN</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${APPLICATION_LOG_HOME}/warning.log.%d{yyyy-MM-dd}.%i</fileNamePattern>
+            <maxFileSize>100MB</maxFileSize>
+            <maxHistory>300</maxHistory>
+            <maxFileSize>1GB</maxFileSize>
+        </rollingPolicy>
+        <encoder charset="UTF-8">
+            <pattern>${LOG_PATTERN}</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <appender name="warningAsync" class="ch.qos.logback.classic.AsyncAppender">
+        <neverBlock>true</neverBlock>
+        <maxFlushTime>3000</maxFlushTime>
+        <queueSize>512</queueSize>
+        <appender-ref ref="warningSync"/>
+        <includeCallerData>true</includeCallerData>
+    </appender>
+
+    <appender name="errorSync" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${APPLICATION_LOG_HOME}/error.log</file>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${APPLICATION_LOG_HOME}/error.log.%d{yyyy-MM-dd}.%i</fileNamePattern>
+            <maxFileSize>100MB</maxFileSize>
+            <maxHistory>300</maxHistory>
+            <maxFileSize>1GB</maxFileSize>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <appender name="errorAsync" class="ch.qos.logback.classic.AsyncAppender">
+        <neverBlock>true</neverBlock>
+        <maxFlushTime>3000</maxFlushTime>
+        <queueSize>512</queueSize>
+        <appender-ref ref="errorSync"/>
+        <includeCallerData>true</includeCallerData>
+    </appender>
+
+    <!-- 记录器 name : 包名或类名， level : 要记录的日志的起始级别， additivity : 是否追加父类的 appender -->
+    <logger name="com.bird" level="debug" additivity="true">
+        <appender-ref ref="mainAsync"/>
+        <appender-ref ref="warningAsync"/>
+        <appender-ref ref="errorAsync"/>
+    </logger>
+
+    <!-- 根记录器 -->
+    <root level="info">
+        <appender-ref ref="STDOUT"/>
+    </root>
+</configuration>
