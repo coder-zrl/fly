@@ -10,7 +10,9 @@ import io.lettuce.core.api.sync.RedisCommands;
  * Redis命名空间枚举
  */
 public enum RedisNameSpace {
-    test(RedisClusters.getConnection(), "test");
+    redisLock(RedisClusters.getConnection(), "redisLock"),
+    test(RedisClusters.getConnection(), "test"),
+    ;
 
     private final StatefulRedisConnection<String, String> connection;
     private final String keyPrefix;
