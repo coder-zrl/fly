@@ -32,12 +32,10 @@
     </appender>
 
     <appender name="mainSync" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>logs/${APPLICATION_LOG_HOME}/main.log</file>
+        <file>${APPLICATION_LOG_HOME}/main.log</file>
         <!--ThresholdFilter是打印level及以上的日志 LevelFilter这样写是打印指定级别的日志 -->
-        <filter class="ch.qos.logback.classic.filter.LevelFilter">
-            <level>WARN</level>
-            <onMatch>ACCEPT</onMatch>
-            <onMismatch>DENY</onMismatch>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>DEBUG</level>
         </filter>
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
             <fileNamePattern>${APPLICATION_LOG_HOME}/main.log.%d{yyyy-MM-dd}.%i</fileNamePattern>
@@ -116,7 +114,6 @@
 
     <!-- 记录器 name : 包名或类名， level : 要记录的日志的起始级别， additivity : 是否追加父类的 appender -->
     <logger name="com.bird" level="debug" additivity="true">
-        <appender-ref ref="mainAsync"/>
         <appender-ref ref="warningAsync"/>
         <appender-ref ref="errorAsync"/>
     </logger>
@@ -124,5 +121,6 @@
     <!-- 根记录器 -->
     <root level="info">
         <appender-ref ref="STDOUT"/>
+        <appender-ref ref="mainAsync"/>
     </root>
 </configuration>
